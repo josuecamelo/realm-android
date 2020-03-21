@@ -16,7 +16,7 @@ public class MyApplication extends Application {
                 .name("meuprimeirobanco.realm").build();
 
         //Toda Vez vai Apagar os Dados do Banco, Mod DEV, remover em produção
-        Realm.deleteRealm(config);
+        //Realm.deleteRealm(config);
         Realm.setDefaultConfiguration(config);
     }
 }

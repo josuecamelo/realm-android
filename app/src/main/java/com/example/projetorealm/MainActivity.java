@@ -16,9 +16,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,15 +53,17 @@ public class MainActivity extends AppCompatActivity {
         Produto prod2 = new Produto("Leite", 10, 50);
         realm.copyToRealm(prod2);
 
-        prod = new Produto("Bolacha", 10, 50);
-        realm.copyToRealm(prod);
+        Produto prod3 = new Produto("Bolacha", 10, 50);
+        realm.copyToRealm(prod3);
 
-        prod = new Produto("Geleia", 100, 500);
-        realm.copyToRealm(prod);
+        Produto prod4 = new Produto("Geleia", 100, 500);
+        realm.copyToRealm(prod4);
 
+        Produto prod5 = new Produto("Notebook", 3, 3000);
+        realm.copyToRealm(prod5);
 
-        prod = new Produto("Notebook", 3, 3000);
-        realm.copyToRealm(prod);
+        Produto prod6 = new Produto("Vinho", 3, 3000);
+        realm.copyToRealm(prod6);
 
         realm.commitTransaction();
         realm.close();
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         realm.beginTransaction();
 
         //RealmResults<Produto> produtos = realm.where(Produto.class).findAll();
-        RealmResults<Produto> produtos = realm.where(Produto.class).equalTo("nome", "Pipoca").findAll();
+        //RealmResults<Produto> produtos = realm.where(Produto.class).equalTo("nome", "Pipoca").findAll();
 
         //find first
         //Produto produto = realm.where(Produto.class).equalTo("peso", 100).findFirst();
@@ -83,23 +87,54 @@ public class MainActivity extends AppCompatActivity {
         //maior que ou igual a
         //RealmResults<Produto> prods1 = realm.where(Produto.class).greaterThanOrEqualTo("peso", 50).findAll();
 
+
+        /*
+         * Condiçoes para Textos
+         * */
+
+        //somente para string usando contains
+        //RealmResults<Produto> produtos = realm.where(Produto.class).contains("nome", "ook", Case.SENSITIVE).findAll();
+        //RealmResults<Produto> produtos = realm.where(Produto.class).contains("nome", "ook", Case.SENSITIVE).findAll();
+
+        //Begin With
+        //RealmResults<Produto> produtos = realm.where(Produto.class).beginsWith("nome", "n", Case.INSENSITIVE).findAll();
+
+        //RealmResults<Produto> produtos = realm.where(Produto.class).beginsWith("nome", "n", Case.INSENSITIVE).findAll();
+        //.endsWith .like
+
+        //RealmResults<Produto> produtos = realm.where(Produto.class).like("nome", "*nh*", Case.INSENSITIVE).findAll();
+        /*RealmResults<Produto> produtos = realm.where(Produto.class)
+                .equalTo("nome", "Pipoca")
+                .or()
+                .equalTo("preco", 3000.00)
+                .findAll();*/
+        /*
+         * Ordenação
+         * */
+        RealmResults<Produto> produtos = realm.where(Produto.class).findAll();
+
         List<Produto> pList = new ArrayList<>();
 
-        for(int i =0; i< produtos.size(); i++){
+        for (int i = 0; i < produtos.size(); i++) {
             Produto p = new Produto(
-              produtos.get(i).getNome(),
-              produtos.get(i).getPeso(),
-              produtos.get(i).getPreco()
+                    produtos.get(i).getId(),
+                    produtos.get(i).getNome(),
+                    produtos.get(i).getPeso(),
+                    produtos.get(i).getPreco()
             );
 
             pList.add(p);
         }
 
-        Toast.makeText(
-                getApplicationContext(),
-                "Nome Primeiro Produto: " + pList.get(0).getNome(),
-                Toast.LENGTH_LONG)
-                .show();
+
+        for (int i = 0; i < pList.size(); i++) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Nome Primeiro Produto: " +pList.get(i).getNome() + " ID: " + pList.get(i).getId(),
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
+
 
         realm.commitTransaction();
         realm.close();
