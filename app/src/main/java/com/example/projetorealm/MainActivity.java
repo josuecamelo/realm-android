@@ -11,6 +11,14 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +37,73 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+
+        Produto prod = new Produto();
+        prod.setNome("Pipoca");
+        prod.setPeso(10.5);
+        prod.setPreco(120.0);
+        realm.copyToRealm(prod);
+
+        Produto prod2 = new Produto("Leite", 10, 50);
+        realm.copyToRealm(prod2);
+
+        prod = new Produto("Bolacha", 10, 50);
+        realm.copyToRealm(prod);
+
+        prod = new Produto("Geleia", 100, 500);
+        realm.copyToRealm(prod);
+
+
+        prod = new Produto("Notebook", 3, 3000);
+        realm.copyToRealm(prod);
+
+        realm.commitTransaction();
+        realm.close();
+
+        //Listando Todos
+        realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+
+        //RealmResults<Produto> produtos = realm.where(Produto.class).findAll();
+        RealmResults<Produto> produtos = realm.where(Produto.class).equalTo("nome", "Pipoca").findAll();
+
+        //find first
+        //Produto produto = realm.where(Produto.class).equalTo("peso", 100).findFirst();
+
+        //filtro in
+        //RealmResults<Produto> prods1 = realm.where(Produto.class).in("peso", new String[]{"Pipoca", "Notebook"} ).findAll();
+
+        //between somente para numericos
+        //RealmResults<Produto> prods1 = realm.where(Produto.class).between("peso", 10, 40 ).findAll();
+
+        //maior que ou igual a
+        //RealmResults<Produto> prods1 = realm.where(Produto.class).greaterThanOrEqualTo("peso", 50).findAll();
+
+        List<Produto> pList = new ArrayList<>();
+
+        for(int i =0; i< produtos.size(); i++){
+            Produto p = new Produto(
+              produtos.get(i).getNome(),
+              produtos.get(i).getPeso(),
+              produtos.get(i).getPreco()
+            );
+
+            pList.add(p);
+        }
+
+        Toast.makeText(
+                getApplicationContext(),
+                "Nome Primeiro Produto: " + pList.get(0).getNome(),
+                Toast.LENGTH_LONG)
+                .show();
+
+        realm.commitTransaction();
+        realm.close();
+
     }
 
     @Override
